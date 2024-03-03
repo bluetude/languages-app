@@ -4,6 +4,7 @@ namespace App\Modules\User\Api\Action;
 
 use App\Modules\User\Api\Dto\UserDto;
 use App\Modules\User\Message\CreatePendingUser;
+use App\Modules\User\Message\SendVerificationEmail;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,7 +23,7 @@ final class RegisterAction
 
     #[Route(
         path: '/register',
-        name: 'api_user_register',
+        name: 'api_register',
         methods: ['POST']
     )]
     public function __invoke(
@@ -34,8 +35,13 @@ final class RegisterAction
             $userDto->getUsername(),
             $userDto->getEmail(),
             $userDto->getPassword(),
-            Uuid::uuid4(),
+            $verificationToken = Uuid::uuid4(),
             (new \DateTime())->modify('+2 hours')
+        ));
+
+        $this->bus->dispatch(new SendVerificationEmail(
+            $userDto->getEmail(),
+            $verificationToken,
         ));
 
         return new JsonResponse([], Response::HTTP_OK);
