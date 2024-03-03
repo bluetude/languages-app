@@ -21,28 +21,11 @@ class PendingUserRepository extends ServiceEntityRepository
         parent::__construct($registry, PendingUser::class);
     }
 
-    //    /**
-    //     * @return PendingUser[] Returns an array of PendingUser objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('p.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    public function add(PendingUser $pendingUser): void
+    {
+        $em = $this->getEntityManager();
 
-    //    public function findOneBySomeField($value): ?PendingUser
-    //    {
-    //        return $this->createQueryBuilder('p')
-    //            ->andWhere('p.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        $em->persist($pendingUser);
+        $em->flush();
+    }
 }
