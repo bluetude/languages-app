@@ -28,4 +28,12 @@ class PendingUserRepository extends ServiceEntityRepository
         $em->persist($pendingUser);
         $em->flush();
     }
+
+    public function remove(PendingUser $pendingUser): void
+    {
+        $em = $this->getEntityManager();
+
+        $em->remove($pendingUser);
+        $em->flush();
+    }
 }

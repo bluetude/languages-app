@@ -3,6 +3,7 @@
 namespace App\Modules\User\Api\Action;
 
 use App\Modules\User\Message\CreateUser;
+use App\Modules\User\Message\RemovePendingUser;
 use App\Modules\User\Repository\PendingUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,7 +22,7 @@ class VerifyEmailAction
     #[Route(
         path: 'verify-email/{token}',
         name: 'api_verify_email',
-        methods: ['POST']
+        methods: ['GET']
     )]
     public function __invoke(string $token): Response
     {
@@ -36,6 +37,10 @@ class VerifyEmailAction
             $pendingUser->getUsername(),
             $pendingUser->getEmail(),
             $pendingUser->getPassword()
+        ));
+
+        $this->bus->dispatch(new RemovePendingUser(
+            $pendingUser->getId()
         ));
 
         return new JsonResponse([], Response::HTTP_OK);

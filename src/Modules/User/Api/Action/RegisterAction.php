@@ -35,7 +35,7 @@ final class RegisterAction
             $userDto->getUsername(),
             $userDto->getEmail(),
             $userDto->getPassword(),
-            $verificationToken = Uuid::uuid4(),
+            $verificationToken = Uuid::uuid4()->toString(),
             (new \DateTime())->modify('+2 hours')
         ));
 

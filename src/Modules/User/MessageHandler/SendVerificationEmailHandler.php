@@ -3,6 +3,7 @@
 namespace App\Modules\User\MessageHandler;
 
 use App\Modules\User\Message\SendVerificationEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Mime\Email;
@@ -21,14 +22,17 @@ class SendVerificationEmailHandler
     public function __invoke(SendVerificationEmail $message): void
     {
         $email = (new Email())
-            ->from('test@exmaple.com')
+            ->from('marcin.barcz@icloud.com')
             ->to($message->getEmail())
             ->subject('Verify your email')
-            ->html($this->urlGenerator->generate('api_verify_email', [
-                'slug' => $message->getVerificationToken(),
-            ]))
+            ->html('<a href="http://localhost:8000' . $this->urlGenerator->generate('api_verify_email', [
+                'token' => $message->getVerificationToken(),
+            ]) . '">Verify</a>')
         ;
 
-        $this->mailer->send($email);
+        try {
+            $this->mailer->send($email);
+        } catch (TransportExceptionInterface $e) {
+        }
     }
 }
